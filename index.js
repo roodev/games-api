@@ -20,9 +20,13 @@ app.use((req, res, next) => {
     next()
 })
 
-/**Configurando o endpoint para responder o JSON com uma mensagem*/
+/**Configurando o endpoint '/' para responder o JSON com uma mensagem*/
 app.get('/', (req, res) => {
     res.send({message: `API Games ouvindo na porta   ${PORT}`})
+})
+/**Configurando o endpoint '*' que é retornado quando uma URL requisitada não existe*/
+app.use('*', (req, res) =>{
+    res.send({message: 'API não encontrada!'})
 })
 
 /**Iniciando o servidor da API Games na porta configurada na variável de ambiente (process.env) ou 3000 */
