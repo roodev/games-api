@@ -6,6 +6,9 @@ const cors = require('cors')
 const PORT = process.env.PORT || 3000
 const database= require('./src/config/database')
 
+/**Importando rotas da aplicação*/
+const GamesRoutes= require('./src/app/routes/games.routes')
+
 /**Configurando body parser*/
 app.use(bodyParser.urlencoded({extended: true}))
 app.use(bodyParser.text())
@@ -24,6 +27,9 @@ app.use((req, res, next) => {
 app.get('/', (req, res) => {
     res.send({message: `API Games ouvindo na porta   ${PORT}`})
 })
+
+app.use('/games', GamesRoutes)
+
 /**Configurando o endpoint '*' que é retornado quando uma URL requisitada não existe*/
 app.use('*', (req, res) =>{
     res.send({message: 'API não encontrada!'})
