@@ -1,4 +1,4 @@
-const gameschema= require('./../games.model')
+const gameschema= require('./../models/games.model')
 
 class Game{
 
