@@ -59,9 +59,17 @@ class Game{
         })
     }
 
+    apagarUmGame(req, res){
+        const nomeDoGameParaSerApagado= req.params.nome
 
-
-
-
+        gameschema.deleteOne({nome: nomeDoGameParaSerApagado}, (err) => {
+            if (err){
+                res.status(500).send({message: "Houve um erro ao apagar um", error: err})
+            } else{
+                res.status(200).send({message: `O Game  ${nomeDoGameParaSerApagado} foi apagado com sucesso`})
+            }
+        })
+    }
+    
 }
 module.exports = new Game()
