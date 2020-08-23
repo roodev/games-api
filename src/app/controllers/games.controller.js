@@ -23,5 +23,18 @@ class Game{
             }
         })
     }
+
+    visualizarUmGame(req, res){
+        const nome= req.params.nome
+
+        gameschema.find({nome: nome}, (err, data) =>{
+            if(err){
+                res.status(500).send({message: "Houve um erro ao processar a sua requisição", error: err})
+            }else{
+                res.status(200).send({message: `O Game ${nome} foi recuperado com sucesso`, game: data})
+            }       
+        })
+    }
+    
 }
 module.exports = new Game()
