@@ -9,6 +9,8 @@ const database= require('./src/config/database')
 /**Importando rotas da aplicação*/
 const GamesRoutes= require('./src/app/routes/games.routes')
 
+const GamersRoutes= require('./src/app/routes/gamers.routes')
+
 /**Configurando body parser*/
 app.use(bodyParser.urlencoded({extended: true}))
 app.use(bodyParser.text())
@@ -29,6 +31,8 @@ app.get('/', (req, res) => {
 })
 
 app.use('/games', GamesRoutes)
+
+app.use('/gamers', GamersRoutes)
 
 /**Configurando o endpoint '*' que é retornado quando uma URL requisitada não existe*/
 app.use('*', (req, res) =>{
