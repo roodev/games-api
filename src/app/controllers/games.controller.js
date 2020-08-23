@@ -1,5 +1,14 @@
 const gameschema= require('./../models/games.model')
 
+function definirCamposDeBusca(campos){
+    if(campos == 'nome18'){
+        return{ nome: 1, plataforma: 1}
+    } else if(campos == 'nome'){
+        return {nome: 1}
+    } else {
+        return null
+    }
+}
 class Game{
 
     criarGame(req, res){
@@ -15,7 +24,9 @@ class Game{
     }
 
     visualizarGames(req, res){
-        gameschema.find({}, (err, data) =>{
+        const campos= req.query.campos
+
+        gameschema.find({}, definirCamposDeBusca(campos), (err, data) =>{
             if(err){
                 res.status(500).send({message: "Houve um erro ao processar a sua requisição", error: err})
             }else{
@@ -35,6 +46,6 @@ class Game{
             }       
         })
     }
-    
+
 }
 module.exports = new Game()
