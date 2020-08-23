@@ -13,5 +13,15 @@ class Game{
             }
         }) 
     }
+
+    visualizarGames(req, res){
+        gameschema.find({}, (err, data) =>{
+            if(err){
+                res.status(500).send({message: "Houve um erro ao processar a sua requisição", error: err})
+            }else{
+                res.status(200).send({message: "Todos os games foram recuperados com sucesso", games: data})
+            }
+        })
+    }
 }
 module.exports = new Game()
