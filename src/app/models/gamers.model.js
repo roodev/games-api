@@ -13,11 +13,10 @@ const GamerSchema= new Schema({
         trim: true
     },
 
-    game:{
-        type: String,
-        required: true,
-        trim: true
-    },
+    game:[{
+        type: Schema.Types.ObjectId,
+        ref: 'gameschema' 
+    }],
 
     plataforma:{
         type: String,
