@@ -11,6 +11,8 @@ const GamesRoutes= require('./src/app/routes/games.routes')
 
 const GamersRoutes= require('./src/app/routes/gamers.routes')
 
+const gameGamerRoutes= require('./src/app/routes/gameGamer.routes')
+
 /**Configurando body parser*/
 app.use(bodyParser.urlencoded({extended: true}))
 app.use(bodyParser.text())
@@ -33,6 +35,8 @@ app.get('/', (req, res) => {
 app.use('/games', GamesRoutes)
 
 app.use('/gamers', GamersRoutes)
+
+app.use('/gameGamers', gameGamerRoutes)
 
 /**Configurando o endpoint '*' que é retornado quando uma URL requisitada não existe*/
 app.use('*', (req, res) =>{
