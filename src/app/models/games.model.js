@@ -7,11 +7,6 @@ const GameSchema= new Schema({
         trim: true
     },
 
-    produtora:{
-        type: String,
-        required: false,
-        trim: true
-    },
 
     plataforma:{
         type: String,
@@ -19,8 +14,20 @@ const GameSchema= new Schema({
         trim: true
     },
 
-    maior18:{
-        type: Boolean,
+    classificacao:{
+        type: Number,
+        trim: true
+    },
+
+    imagem: {
+        type: String,
+        required: true,
+        trim: true
+    },
+
+    produtora:{
+        type: Schema.Types.ObjectId,
+        ref: 'Developer',
         required: true,
         trim: true
     }
@@ -34,4 +41,4 @@ const GameSchema= new Schema({
 
 )
 
-module.exports= model('gameschema', GameSchema)
+module.exports= model('Game', GameSchema)
