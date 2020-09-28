@@ -31,7 +31,7 @@ const GameSchema= new Schema({
         trim: true
     },
 
-    produtora:{
+    developer:{
         type: Schema.Types.ObjectId,
         ref: 'Developer',  
         
