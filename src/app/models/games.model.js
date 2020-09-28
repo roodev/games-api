@@ -19,6 +19,12 @@ const GameSchema= new Schema({
         trim: true
     },
 
+    sinopse:{
+        type: String,
+        required: true,
+        trim: true
+    },
+
     imagem: {
         type: String,
         required: true,
@@ -27,9 +33,8 @@ const GameSchema= new Schema({
 
     produtora:{
         type: Schema.Types.ObjectId,
-        ref: 'Developer',
-        required: true,
-        trim: true
+        ref: 'Developer',  
+        
     }
 
 },
