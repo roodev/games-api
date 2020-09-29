@@ -8,6 +8,12 @@ const DeveloperSchema= new Schema({
         trim: true
     },
 
+    imagem:{
+        type: String,
+        required: true,
+        trim: true
+    },
+
     nacionalidade:{
         type: String,
         required: true,
