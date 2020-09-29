@@ -5,6 +5,7 @@ class Developer{
 
     buscarTodasAsDevelopers(req, res){
         developer.find({}, {games: 0})
+        
         .sort({nome: 1})
         .exec((err, data) => {
             if(err){
@@ -26,13 +27,13 @@ class Developer{
             res.status(400).send({message: "O nome da desenvolvedora deve ser obrigatoriamente preenchido"})
         }
 
-        developer.findOne({nome: nomeDeveloper })
+        developer.find({nome: nomeDeveloper })
             .populate('games', {nome: 1, imagem: 1})
             .exec((err, data) => {
                 if (err) {
                     res.status(500).send({message: "Houve um erro ao processar a sua requisição", error: err})
                 } else {
-                    if (data.lenght == null){
+                    if (data.lenght <= null){
                          res.status(200).send({message: `A desenvolvedora ${nomeDeveloper} não existe no banco de dados`})
                     }else{
                         res.status(200).send({message: `A desenvolvedora ${nomeDeveloper} foi recuperada com sucesso`, data: data})
