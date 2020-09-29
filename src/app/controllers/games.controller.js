@@ -26,7 +26,7 @@ class Game{
     }
 
     buscarUmGamePeloNome(req, res){
-        const {nomeGame}= req.params.nome
+        const {nomeGame}= req.params
 
         if(nomeGame == undefined || nomeGame =='null'){
             res.status(400).send({message:"O nome do game deve ser obrigatoriamente preenchido"})
