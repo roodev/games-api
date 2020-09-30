@@ -1,56 +1,84 @@
-const gameschema= require('./../models/games.model')
+const game= require('./../models/games.model')
+const developer= require('./../models/developers.model')
 
-function definirCamposDeBusca(campos){
-    if(campos == 'nome18'){
-        return{ nome: 1, plataforma: 1}
-    } else if(campos == 'nome'){
-        return {nome: 1}
-    } else {
-        return null
-    }
-}
+
 class Game{
 
-    criarGame(req, res){
-        const body= req.body
+  
 
-        gameschema.create(body, (err, data) =>{
-            if(err){
-                res.status(500).send({message: "Houve um erro ao processar a sua requisição", error: err})
-            } else{
-                res.status(201).send({message: "Game criado com sucesso no banco de dados", game: data})
-            }
-        }) 
-    }
-
-    visualizarGames(req, res){
-        const campos= req.query.campos
-
-        gameschema.find({}, definirCamposDeBusca(campos), (err, data) =>{
+    buscarTodosOsGames(req, res){
+        
+        game.find({})
+            .populate('developer', {nome: 1, imagem: 1})
+            .sort({nome: 1})
+            .exec((err, data) =>{
             if(err){
                 res.status(500).send({message: "Houve um erro ao processar a sua requisição", error: err})
             }else{
-                res.status(200).send({message: "Todos os games foram recuperados com sucesso", games: data})
+                if(data.lenght <= 0){
+                    res.status(200).send({message: "Não existem games cadastrados no banco de dados"})
+                }else {
+                    res.status(200).send({message: "Todos os games foram recuperados com sucesso", data: data})
+                }
+                
             }
         })
     }
 
-    visualizarUmGame(req, res){
-        const nome= req.params.nome
+    buscarUmGamePeloNome(req, res){
+        const {nomeGame}= req.params
 
-        gameschema.find({nome: nome}, (err, data) =>{
-            if(err){
-                res.status(500).send({message: "Houve um erro ao processar a sua requisição", error: err})
-            }else{
-                res.status(200).send({message: `O Game ${nome} foi recuperado com sucesso`, game: data})
-            }       
-        })
+        if(nomeGame == undefined || nomeGame =='null'){
+            res.status(400).send({message:"O nome do game deve ser obrigatoriamente preenchido"})
+        }
+
+        game.findOne({nome: nomeGame})
+            .populate('developer', {nome: 1, imagem: 1})
+            .exec ((err, data) =>{
+                if(err){
+                    res.status(500).send({message: "Houve um erro ao processar a sua requisição", error: err})
+                 }else{
+                    if(data == null){
+                        res.status(200).send({message:`Game não encontrado no banco de dados`})
+                    }else{
+                        res.status(200).send({message: `O Game ${nomeGame} foi recuperado com sucesso`, data: data})
+                    }               
+                }       
+            })
     }
+
+    criarUmGame(req, res) {
+        const reqBody = req.body
+        const idDeveloper = reqBody['developer']
+    
+    
+        game.create(reqBody, (err, game) => {
+          if (err) {
+            res.status(500).send({ message: "Houve um erro ao processar a sua requisição", error: err })
+          } else {
+            developer.findById(idDeveloper, (err, developer) => {
+              if (err) {
+                res.status(500).send({ message: "Houve um erro ao processar a sua requisição", error: err })
+              } else {
+                developer.games.push(game)
+                developer.save({}, (err) => {
+                  if (err) {
+                    res.status(500).send({ message: "Houve um erro ao processar a sua requisição", error: err })
+                  } else {
+                    res.status(201).send({ message: "Game criado com sucesso", data: game})
+                  }
+                })
+              }
+            })
+          }
+        })
+      }
+
 
     atualizarUmGame(req, res){
         const nome= req.params.nome
 
-        gameschema.updateOne({nome: nome}, {$set: req.body}, (err, data) =>{
+        game.updateOne({nome: nome}, {$set: req.body}, (err, data) =>{
             if (err) {
                 res.status(500).send({message: "Houve um erro ao processar a sua requisição", error: err})
             } else{
@@ -62,7 +90,7 @@ class Game{
     apagarUmGame(req, res){
         const nomeDoGameParaSerApagado= req.params.nome
 
-        gameschema.deleteOne({nome: nomeDoGameParaSerApagado}, (err) => {
+        game.deleteOne({nome: nomeDoGameParaSerApagado}, (err) => {
             if (err){
                 res.status(500).send({message: "Houve um erro ao apagar um", error: err})
             } else{

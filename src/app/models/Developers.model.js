@@ -1,42 +1,37 @@
-const{Schema, model} = require('mongoose')
+const {Schema, model} = require("mongoose")
 
-const GameSchema= new Schema({
+const DeveloperSchema= new Schema({
     nome:{
         type: String,
         required: true,
+        maxlenght: 200,
         trim: true
     },
 
-
-    plataforma:{
+    imagem:{
         type: String,
         required: true,
         trim: true
     },
 
-    classificacao:{
-        type: Number,
-        trim: true
-    },
-
-    sinopse:{
+    nacionalidade:{
         type: String,
         required: true,
         trim: true
     },
 
-    imagem: {
+     plataforma:{
         type: String,
         required: true,
         trim: true
     },
 
-    developer:{
-        type: Schema.Types.ObjectId,
-        ref: 'Developer',  
-        
-    }
-
+    games:[
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'Game'
+        }
+    ]
 },
 
     {
@@ -46,4 +41,4 @@ const GameSchema= new Schema({
 
 )
 
-module.exports= model('Game', GameSchema)
+module.exports= model('Developer', DeveloperSchema)
