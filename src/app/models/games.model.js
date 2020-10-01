@@ -34,6 +34,7 @@ const GameSchema= new Schema({
     developer:{
         type: Schema.Types.ObjectId,
         ref: 'Developer',  
+        required: true
         
     }
 
