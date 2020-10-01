@@ -93,6 +93,22 @@ class Developer{
             }
         })
     }
+
+    validarNomeDeveloper(req, res){
+        const nome= req.query.nome.replace(/%20/g, " ")
+
+        developer.find({ nome: { '$regex': `^${nome}$`, '$options': 'i' } }, (err, result) =>{
+            if(err){
+                res.status(500).send({ message: "Houve um erro ao processar a sua requisição" })
+            }else{
+                if(result.lenght > 0){
+                    res.status(200).send({ message: "Já existe uma desenvolvedora cadastrada com esse nome", data: result.lenght })
+                }else{
+                    res.status(200).send({message: "Desenvolvedora disponível", data: result.lenght })
+                }
+            }
+        })
+    }
     
 }
 module.exports = new Developer()

@@ -7,5 +7,5 @@ route.get('/listarUma/:nomeDeveloper', Developer.bucarUmaDeveloperPeloNome)
 route.post('/criar', Developer.criarUmaDeveloper)
 route.put('/atualizarUma/:nome', Developer.atualizarUmaDeveloper)
 route.delete('/apagarUma/:nome', Developer.apagarUmaDeveloper)
-
+route.get('/validarNomeDeveloper', Developer.validarNomeDeveloper)
 module.exports= route
