@@ -27,13 +27,13 @@ class Developer{
             res.status(400).send({message: "O nome da desenvolvedora deve ser obrigatoriamente preenchido"})
         }
 
-        developer.find({nome: nomeDeveloper })
+        developer.findOne({nome: nomeDeveloper })
             .populate('games', {nome: 1, imagem: 1})
             .exec((err, data) => {
                 if (err) {
                     res.status(500).send({message: "Houve um erro ao processar a sua requisição", error: err})
                 } else {
-                    if (data.lenght <= null){
+                    if (data == null){
                          res.status(200).send({message: `A desenvolvedora ${nomeDeveloper} não existe no banco de dados`})
                     }else{
                         res.status(200).send({message: `A desenvolvedora ${nomeDeveloper} foi recuperada com sucesso`, data: data})
@@ -90,6 +90,22 @@ class Developer{
                 res.status(500).send({message: "Houve um erro ao apagar um", error: err})
             } else{
                 res.status(200).send({message: `A desenvolvedora  ${nomeDaDeveloperParaSerApagado} foi apagada com sucesso`})
+            }
+        })
+    }
+
+    validarNomeDeveloper(req, res){
+        const nome= req.query.nome.replace(/%20/g, " ")
+
+        developer.find({ nome: { '$regex': `^${nome}$`, '$options': 'i' } }, (err, result) =>{
+            if(err){
+                res.status(500).send({ message: "Houve um erro ao processar a sua requisição" })
+            }else{
+                if(result.length > 0){
+                    res.status(200).send({ message: "Já existe uma desenvolvedora cadastrada com esse nome", data: result.length })
+                }else{
+                    res.status(200).send({message: "Desenvolvedora disponível", data: result.length })
+                }
             }
         })
     }

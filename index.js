@@ -39,7 +39,7 @@ app.use('/developers', DevelopersRoutes)
 
 /**Configurando o endpoint '*' que é retornado quando uma URL requisitada não existe*/
 app.use('*', (req, res) =>{
-    res.send({message: 'API não encontrada!'})
+    res.status(404).send({message: 'API não encontrada!'})
 })
 
 /**Iniciando o servidor da API Games na porta configurada na variável de ambiente (process.env) ou 3000 */
