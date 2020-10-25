@@ -1,5 +1,6 @@
 const game= require('./../models/games.model')
 const developer= require('./../models/developers.model')
+const gamesModel = require('./../models/games.model')
 
 
 class Game{
@@ -114,6 +115,51 @@ class Game{
             }
         })
     }
-    
+
+    update(req, res){
+        const{gameId} = req.params
+        const{reqBody}= req.body
+        const developerId= reqBody['developer']
+
+        game.updateOne({_id: gameId}, {$set: reqBody}, (err, games) =>{
+            if(err){
+                res.status(500).send({message: "Houve um erro ao processar a sua requisição" })
+            } else{
+                 developer.findOne({games: gameId}, (err, result) => {
+                     if (err){
+                        res.status(500).send({message: "Houve um erro ao processar a sua requisição" })
+                     }else {
+                         if(result['_id'] == developerId) {
+                             res.status(200).send({ message: "O Game foi atualizado", data: games })
+                         }else{
+                             result.games.pull(gameId)
+                             result.save({}, (err) => {
+                                 if(err){
+                                    res.status(500).send({message: "Houve um erro ao processar a sua requisição" })                                                                        
+                                 }else{
+                                     developer.findById(developerId, (err, developer) => {
+                                         if (err) {
+                                            res.status(500).send({message: "Houve um erro ao processar a sua requisição" })
+                                         } else {
+                                             developer.games.push(gameId)
+                                             developer.save({}, (err) =>{
+                                                 if (err) {
+                                                    res.status(500).send({message: "Houve um erro ao processar a sua requisição" })
+                                                 } else {
+                                                     res.status(200).send({ message: "O Game foi atualizado", data: games})
+                                                 }
+                                             })
+                                         }
+                                    })
+                                }
+                            })
+                        }
+                    }
+                })
+            }
+        })
+    }                            
+                                                                   
+                                 
 }
 module.exports = new Game()

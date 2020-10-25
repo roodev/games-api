@@ -8,5 +8,6 @@ route.get('/listarUm/:nomeGame', Game.buscarUmGamePeloNome)
 route.put('/atualizarUm/:nome', Game.atualizarUmGame)
 route.delete('/apagarUm/:nome', Game.apagarUmGame)
 route.get('/validarNomeGame', Game.validarNomeGame)
+route.put('/atualizar/:gameId', Game.update)
 
 module.exports= route
