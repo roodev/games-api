@@ -88,7 +88,7 @@ class Game{
         })
     }
 
-    apagarUmGame(req, res){
+    /*apagarUmGame(req, res){
         const nomeDoGameParaSerApagado= req.params.nome
 
         game.deleteOne({nome: nomeDoGameParaSerApagado}, (err) => {
@@ -99,7 +99,7 @@ class Game{
             }
         })
     }
-
+*/
     validarNomeGame(req, res){
         const nome= req.query.nome.replace(/%20/g, " ")
 
@@ -158,7 +158,33 @@ class Game{
                 })
             }
         })
-    }                            
+    }   
+    
+    delete(req, res){
+        const { gameId }= req.params
+
+        developer.findOne({ games: gameId }, (err, developer) => {
+            if (err) {
+                res.status(500).send({ message: "Houve um erro ao processar a sua requisição", error: err })
+            } else {
+                developer.games.pull(gameId)
+                developer.save( (err) => {
+                    if (err) {
+                        res.status(500).send({ message: "Houve um erro ao processar a sua requisição", error: err })
+                    } else {
+                        game.deleteOne({ _id: gameId }, (err, result) => {
+                            if (err) {
+                                res.status(500).send({ message: "Houve um erro ao processar a sua requisição", error: err })
+                            } else {
+                                res.status(200).send({ message: "Game foi apagado com sucesso", data: result})
+                            }
+                        })
+                    }
+
+                })
+            }
+        })
+    }
                                                                    
                                  
 }
