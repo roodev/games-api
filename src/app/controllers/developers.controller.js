@@ -1,4 +1,6 @@
 const developer= require('../models/developers.model')
+const game= require('./../models/games.model')
+const developersModel= require('./../models/developers.model')
 
 
 class Developer{
@@ -106,6 +108,32 @@ class Developer{
                 }else{
                     res.status(200).send({message: "Desenvolvedora disponível", data: result.length })
                 }
+            }
+        })
+    }
+    
+    delete(req, res){
+        const { developerId }= req.params
+
+        game.findOne({ developers: developerId }, (err, game) => {
+            if (err) {
+                res.status(500).send({ message: "Houve um erro ao processar a sua requisição", error: err })
+            } else {
+                game.developers.pull(developerId)
+                game.save( (err) => {
+                    if (err) {
+                        res.status(500).send({ message: "Houve um erro ao processar a sua requisição", error: err })
+                    } else {
+                        developer.deleteOne({ _id: developerId }, (err, result) => {
+                            if (err) {
+                                res.status(500).send({ message: "Houve um erro ao processar a sua requisição", error: err })
+                            } else {
+                                res.status(200).send({ message: "Desenvolvedora foi apagada com sucesso", data: result})
+                            }
+                        })
+                    }
+
+                })
             }
         })
     }
