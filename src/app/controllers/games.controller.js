@@ -1,5 +1,6 @@
 const game= require('./../models/games.model')
 const developer= require('./../models/developers.model')
+const gamesModel = require('./../models/games.model')
 
 
 class Game{
@@ -87,7 +88,7 @@ class Game{
         })
     }
 
-    apagarUmGame(req, res){
+    /*apagarUmGame(req, res){
         const nomeDoGameParaSerApagado= req.params.nome
 
         game.deleteOne({nome: nomeDoGameParaSerApagado}, (err) => {
@@ -98,7 +99,7 @@ class Game{
             }
         })
     }
-
+*/
     validarNomeGame(req, res){
         const nome= req.query.nome.replace(/%20/g, " ")
 
@@ -114,6 +115,77 @@ class Game{
             }
         })
     }
+
+    update(req, res){
+        const{gameId} = req.params
+        const{reqBody}= req.body
+        const developerId= reqBody['developer']
+
+        game.updateOne({_id: gameId}, {$set: reqBody}, (err, games) =>{
+            if(err){
+                res.status(500).send({message: "Houve um erro ao processar a sua requisição" })
+            } else{
+                 developer.findOne({games: gameId}, (err, result) => {
+                     if (err){
+                        res.status(500).send({message: "Houve um erro ao processar a sua requisição" })
+                     }else {
+                         if(result['_id'] == developerId) {
+                             res.status(200).send({ message: "O Game foi atualizado", data: games })
+                         }else{
+                             result.games.pull(gameId)
+                             result.save({}, (err) => {
+                                 if(err){
+                                    res.status(500).send({message: "Houve um erro ao processar a sua requisição" })                                                                        
+                                 }else{
+                                     developer.findById(developerId, (err, developer) => {
+                                         if (err) {
+                                            res.status(500).send({message: "Houve um erro ao processar a sua requisição" })
+                                         } else {
+                                             developer.games.push(gameId)
+                                             developer.save({}, (err) =>{
+                                                 if (err) {
+                                                    res.status(500).send({message: "Houve um erro ao processar a sua requisição" })
+                                                 } else {
+                                                     res.status(200).send({ message: "O Game foi atualizado", data: games})
+                                                 }
+                                             })
+                                         }
+                                    })
+                                }
+                            })
+                        }
+                    }
+                })
+            }
+        })
+    }   
     
+    delete(req, res){
+        const { gameId }= req.params
+
+        developer.findOne({ games: gameId }, (err, developer) => {
+            if (err) {
+                res.status(500).send({ message: "Houve um erro ao processar a sua requisição", error: err })
+            } else {
+                developer.games.pull(gameId)
+                developer.save( (err) => {
+                    if (err) {
+                        res.status(500).send({ message: "Houve um erro ao processar a sua requisição", error: err })
+                    } else {
+                        game.deleteOne({ _id: gameId }, (err, result) => {
+                            if (err) {
+                                res.status(500).send({ message: "Houve um erro ao processar a sua requisição", error: err })
+                            } else {
+                                res.status(200).send({ message: "Game foi apagado com sucesso", data: result})
+                            }
+                        })
+                    }
+
+                })
+            }
+        })
+    }
+                                                                    
+                                 
 }
 module.exports = new Game()
